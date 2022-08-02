@@ -308,55 +308,55 @@ if choice == 'User':
 
     elif choose2 == 'Kamera':
         st.set_option('deprecation.showfileUploaderEncoding', False)
-         model = pickle.load(open(path_model, 'rb'))
+        model = pickle.load(open(path_model, 'rb'))
 
-          picture = st.camera_input("Take a picture")
-           if picture is not None:
-                img = Image.open(picture)
-                realtime_update = st.sidebar.checkbox(
-                    label="Update in Real Time", value=True)
-                box_color = st.sidebar.color_picker(
-                    label="Box Color", value='#0000FF')
-                aspect_choice = st.sidebar.radio(label="Aspect Ratio", options=[
-                    "1:1", "16:9", "4:3", "2:3", "Free"])
-                aspect_dict = {
-                    "1:1": (1, 1),
-                    "16:9": (16, 9),
-                    "4:3": (4, 3),
-                    "2:3": (2, 3),
-                    "Free": None
-                }
-                aspect_ratio = aspect_dict[aspect_choice]
+        picture = st.camera_input("Take a picture")
+        if picture is not None:
+            img = Image.open(picture)
+            realtime_update = st.sidebar.checkbox(
+                label="Update in Real Time", value=True)
+            box_color = st.sidebar.color_picker(
+                label="Box Color", value='#0000FF')
+            aspect_choice = st.sidebar.radio(label="Aspect Ratio", options=[
+                "1:1", "16:9", "4:3", "2:3", "Free"])
+            aspect_dict = {
+                "1:1": (1, 1),
+                "16:9": (16, 9),
+                "4:3": (4, 3),
+                "2:3": (2, 3),
+                "Free": None
+            }
+            aspect_ratio = aspect_dict[aspect_choice]
 
-            if picture:
-                img = Image.open(picture)
-                if not realtime_update:
-                    st.write("Double click to save crop")
-                # Get a cropped image from the frontend
-                st.write("Crop gambar")
-                cropped_img = st_cropper(
-                    img, realtime_update=realtime_update, box_color=box_color, aspect_ratio=aspect_ratio)
+        if picture:
+            img = Image.open(picture)
+            if not realtime_update:
+                st.write("Double click to save crop")
+            # Get a cropped image from the frontend
+            st.write("Crop gambar")
+            cropped_img = st_cropper(
+                img, realtime_update=realtime_update, box_color=box_color, aspect_ratio=aspect_ratio)
 
-                # Manipulate cropped image at will
-                st.write("Preview")
-                _ = cropped_img.thumbnail((150, 150))
-                st.image(cropped_img)
+            # Manipulate cropped image at will
+            st.write("Preview")
+            _ = cropped_img.thumbnail((150, 150))
+            st.image(cropped_img)
 
-            if st.button('PREDIKSI'):
-                CATEGORIES = ['busuk', 'kurang segar',
-                              'segar', 'tidak segar']
-                st.write('Hasil...')
-                flat_data = []
-                img = np.array(cropped_img)
-                img_resized = resize(img, (100, 100, 3))
-                flat_data.append(img_resized.flatten())
-                flat_data = np.array(flat_data)
-                y_out = model.predict(flat_data)
-                y_out = CATEGORIES[y_out[0]]
-                st.title(f' Prediksi: {y_out}')
-                q = model.predict_proba(flat_data)
-                for index, item in enumerate(CATEGORIES):
-                    st.write(f'{item} : {q[0][index]*100}%')
+        if st.button('PREDIKSI'):
+            CATEGORIES = ['busuk', 'kurang segar',
+                          'segar', 'tidak segar']
+            st.write('Hasil...')
+            flat_data = []
+            img = np.array(cropped_img)
+            img_resized = resize(img, (100, 100, 3))
+            flat_data.append(img_resized.flatten())
+            flat_data = np.array(flat_data)
+            y_out = model.predict(flat_data)
+            y_out = CATEGORIES[y_out[0]]
+            st.title(f' Prediksi: {y_out}')
+            q = model.predict_proba(flat_data)
+            for index, item in enumerate(CATEGORIES):
+                st.write(f'{item} : {q[0][index]*100}%')
 
 # WORKPLACE FEED PAGE
     elif choose2 == 'Tentang':
