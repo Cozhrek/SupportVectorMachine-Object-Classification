@@ -8,3 +8,4 @@ streamlit
 streamlit_authenticator
 streamlit_cropper
 streamlit_option_menu
+streamlit-aggrid
