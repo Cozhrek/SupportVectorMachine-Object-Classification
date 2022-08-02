@@ -19,3 +19,55 @@ This app using streamlit for building web app
 - streamlit-aggrid
 - plotly-express
 - scikit-learn
+
+## Code
+
+### Database
+```python
+conn = sqlite3.connect("data.db")
+c = conn.cursor()
+
+def create_usertable():
+    c.execute('CREATE TABLE IF NOT EXISTS usertable(username TEXT, password TEXT)')
+
+def add_userdata(username, password):
+    c.execute('INSERT INTO usertable(username, password) VALUES (?,?)',
+              (username, password))
+    conn.commit()
+
+def login_user(username, password):
+    c.execute('SELECT * FROM usertable WHERE username =? AND password =?',
+              (username, password))
+    data = c.fetchall()
+    return data
+
+def view_all_users():
+    c.execute('SELECT * FROM usertable')
+    data = c.fetchall()
+    return data
+
+```
+
+### Auth
+```python
+choice = st.sidebar.selectbox('Login', ['Admin', 'User'])
+```
+
+### Predict Button
+```python
+                if st.button('PREDIKSI'):
+                    CATEGORIES = ['busuk', 'kurang segar',
+                                  'segar', 'tidak segar']
+                    st.write('Hasil...')
+                    flat_data = []
+                    img = np.array(cropped_img)
+                    img_resized = resize(img, (100, 100, 3))
+                    flat_data.append(img_resized.flatten())
+                    flat_data = np.array(flat_data)
+                    y_out = model.predict(flat_data)
+                    y_out = CATEGORIES[y_out[0]]
+                    st.title(f' Prediksi: {y_out}')
+                    q = model.predict_proba(flat_data)
+                    for index, item in enumerate(CATEGORIES):
+                        st.write(f'{item} : {q[0][index]*100}%')
+```
